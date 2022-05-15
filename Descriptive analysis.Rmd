@@ -1,0 +1,789 @@
+---
+title: "Descriptive analysis for Group Project"
+author: "Daniel Han"
+date: "4/13/2022"
+output: html_document
+---
+
+clear Variables
+```{r}
+rm(list=ls())
+```
+
+
+```{r}
+rm(list=ls())
+library(tidyverse)
+library(plotrix)
+
+```
+
+```{r}
+#cleaned by Group Member
+
+clean_honors <- read.csv(file.choose())
+clean_honors
+attach(clean_honors)
+
+
+```
+```{r}
+#Students 678 to 846
+#s678_846 <- filter(clean_honors, between(clean_honors$X, 678 ,846) )
+#attach(s678_846)
+```
+
+```{r}
+#separating failed and passed data
+failed <- filter(clean_honors, Capstone.Project.Completion == "N")
+passed <- filter(clean_honors, Capstone.Project.Completion == "Yes")
+
+```
+
+```{r}
+#Gender
+n = table(Gender)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+#finding percentage for variable
+Gender_percent =c(y[1:length(n)]/sum(y)*100)
+Gender_percent = format(round(Gender_percent, 3), nsmall = 2)
+
+#adding percentage and freq to a single table
+total <- rbind(n, Gender_percent)
+total
+
+pie(n, labels = n, main = 'Gender Breakdown' , col = rainbow(3))
+legend(1.5, .1, c("Female","Male","Non-binary"), cex = 0.7, fill = rainbow(3))
+
+#Comparison Bar plot
+n_completed <- table(passed$Gender)
+n_incompleted <- table(failed$Gender)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+y = c(n_completed)
+#finding percentage for variable
+Gender_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Gender_percent = format(round(Gender_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Gender_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Gender_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Gender_percent = format(round(Gender_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Gender_percent)
+total
+
+
+
+
+```
+
+
+
+
+```{r}
+#Ethnicity
+
+n <- table(IPEDS.Ethnicity)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+
+Ethnicity_percent =c(y[1:length(n)]/sum(y)*100)
+Ethnicity_percent = format(round(Ethnicity_percent, 3), nsmall = 2)
+
+total <- rbind(n, Ethnicity_percent)
+total
+
+barplot(n, horiz = TRUE, main = 'Ethnicity Breakdown' , las=1, cex.names = 0.3)
+
+#Comparison Bar plot
+n_completed <- table(passed$IPEDS.Ethnicity)
+n_incompleted <- table(failed$IPEDS.Ethnicity)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), cex.names = 0.3, main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Ethnicity_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Ethnicity_percent = format(round(Ethnicity_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Ethnicity_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Ethnicity_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Ethnicity_percent = format(round(Ethnicity_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Ethnicity_percent)
+total
+
+```
+
+
+```{r}
+#Low Income
+
+n <- table(Low.Income)
+
+y = c(n)
+
+
+income_percent =c(y[1:length(n)]/sum(y)*100)
+income_percent = format(round(income_percent, 3), nsmall = 2)
+
+total <- rbind(n,income_percent)
+total
+
+pie(n, labels = n, main = 'Income  Breakdown' , col = rainbow(2))
+legend(.9, .1, c("Non-Low income","Low income"), cex = .5, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$Low.Income)
+n_incompleted <- table(failed$Low.Income)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+income_percent =c(y[1:length(n_completed)]/sum(y)*100)
+income_percent = format(round(income_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, income_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+income_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+income_percent = format(round(income_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, income_percent)
+total
+```
+
+
+```{r}
+#First Generation
+
+n <- table(First.Generation)
+y = c(n)
+
+
+generation_percent =c(y[1:length(n)]/sum(y)*100)
+generation_percent = format(round(generation_percent, 3), nsmall = 2)
+
+total <- rbind(n, generation_percent)
+total
+
+pie(n, labels = n, main = 'Generation Breakdown' , col = rainbow(2))
+legend(.9, .1, c("Non-First Gen","First Gen"), cex = .7, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$First.Generation)
+n_incompleted <- table(failed$First.Generation)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+generation_percent =c(y[1:length(n_completed)]/sum(y)*100)
+generation_percent = format(round(generation_percent), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, generation_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+generation_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+generation_percent = format(round(generation_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, generation_percent)
+total
+
+```
+
+
+```{r}
+#Admit Type
+
+n <- table(Admit.Type)
+n <- sort(n, decreasing = TRUE)
+
+
+y = c(n)
+
+admit_percent =c(y[1:length(n)]/sum(y)*100)
+admit_percent = format(round(admit_percent, 3), nsmall = 2)
+
+
+total <- rbind(n, admit_percent)
+total
+
+barplot(n, horiz = TRUE, main = 'Admit Type Breakdown' , las=1, cex.names = 0.8)
+
+#Comparison Bar plot
+n_completed <- table(passed$Admit.Type)
+n_incompleted <- table(failed$Admit.Type)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+admit_percent =c(y[1:length(n_completed)]/sum(y)*100)
+admit_percent = format(round(admit_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, admit_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+admit_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+admit_percent = format(round(admit_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, admit_percent)
+total
+```
+
+
+```{r}
+n <- table(Evaluated.High.School.GPA) # done by group member
+
+
+
+```
+
+```{r}
+#Highlander Scholarship
+
+n <- table(Highlander.Scholarship)
+y = c(n)
+
+
+Highlander_percent =c(y[1:length(n)]/sum(y)*100)
+Highlander_percent = format(round(Highlander_percent, 3), nsmall = 2)
+
+total <- rbind(n, Highlander_percent)
+total
+
+pie(n, labels = n, main = 'Highlander Scholarship Breakdown' ,col = rainbow(2))
+legend(.4, 1.1, c("Non-Highlander.Scholarship","Highlander.Scholarship"), cex = .6, fill = rainbow(2))
+
+
+#Comparison Bar plot
+n_completed <- table(passed$Highlander.Scholarship)
+n_incompleted <- table(failed$Highlander.Scholarship)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+Highlander_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Highlander_percent = format(round(Highlander_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Highlander_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Highlander_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Highlander_percent = format(round(Highlander_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Highlander_percent)
+total
+
+```
+
+```{r}
+#Chancellor Scholarship
+
+n <- table(Chancellor.s.Scholarship)
+y = c(n)
+
+
+Chancellor_percent =c(y[1:length(n)]/sum(y)*100)
+Chancellor_percent = format(round(Chancellor_percent, 3), nsmall = 2)
+
+total <- rbind(n, Chancellor_percent)
+total
+
+pie(n, labels = n, main ='Chancellor.s Scholarship Breakdown' , col = rainbow(2))
+legend(.3, 1.1, c("Non-Chancellor.s.Scholarship","Chancellor.s.Scholarship"), cex = .7, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$Chancellor.s.Scholarship)
+n_incompleted <- table(failed$Chancellor.s.Scholarship)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot",)
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+y = c(n_completed)
+#finding percentage for variable
+Chancellor_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Chancellor_percent = format(round(Chancellor_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Chancellor_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Chancellor_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Chancellor_percent = format(round(Chancellor_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Chancellor_percent)
+total
+
+
+
+```
+
+
+```{r}
+#Regents Scholarship
+
+n <- table(Regents..Scholarship)
+y = c(n )
+
+
+Regents_percent =c(y[1:length(n)]/sum(y)*100)
+Regents_percent = format(round(Regents_percent, 3), nsmall = 2)
+
+total <- rbind(n, Regents_percent)
+total
+
+pie(n, labels = n, main ='Regents Scholarship Breakdown' ,col = rainbow(2))
+legend(.3, 1.1, c("Non-Regents.Scholarship","Regents.Scholarship"), cex = .6, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$Regents..Scholarship)
+n_incompleted <- table(failed$Regents..Scholarship)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+Regents_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Regents_percent = format(round(Regents_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Regents_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Regents_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Regents_percent = format(round(Regents_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Regents_percent)
+total
+```
+
+
+```{r}
+n <- table(Previous.School) #part of county
+```
+
+
+```{r}
+#College
+
+n <- table(College)
+n <- sort(n, decreasing = TRUE)
+y = c(53, 6, 133 , 405, 6)
+
+
+College_percent =c(y[1:length(n)]/sum(y)*100)
+College_percent = format(round(College_percent, 3), nsmall = 2)
+
+total <- rbind(n, College_percent)
+total
+
+barplot(n, horiz = TRUE, main ='College Breakdown' ,las=1, cex.names = 2)
+
+#Comparison Bar plot
+n_completed <- table(passed$College)
+n_incompleted <- table(failed$College)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+College_percent =c(y[1:length(n_completed)]/sum(y)*100)
+College_percent = format(round(College_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, College_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+College_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+College_percent = format(round(College_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, College_percent)
+total
+
+```
+
+
+```{r}
+#Not included in power point based on client
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+Major_percent =c(y[1:length(n)]/sum(y)*100)
+Major_percent = format(round(Major_percent, 3), nsmall = 2)
+
+total <- rbind(n, Major_percent)
+total
+
+barplot(n, horiz = TRUE, main ='Major Breakdown' ,las=1, cex.names = 0.2)
+
+#Comparison Bar plot
+n_completed <- table(passed$Major)
+n_incompleted <- table(failed$Major)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot", cex.names = 0.2)
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Major_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Major_percent = format(round(Major_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Major_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Major_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Major_percent = format(round(Major_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Major_percent)
+total
+```
+
+
+```{r}
+#Entry Action
+
+n <- table(UCR.Entry.Action)
+y = c(n)
+
+Entry_percent =c(y[1:length(n)]/sum(y)*100)
+Entry_percent = format(round(Entry_percent, 3), nsmall = 2)
+
+total <- rbind(n, Entry_percent)
+total
+
+pie(n, labels = n, main ='UCR Entry Breakdown', col = rainbow(2))
+legend(.6, 1, c("First Time Freshman","First Time Transfer"), cex = .7, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$UCR.Entry.Action)
+n_incompleted <- table(failed$UCR.Entry.Action)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+Entry_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Entry_percent = format(round(Entry_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Entry_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Entry_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Entry_percent = format(round(Entry_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Entry_percent)
+total
+```
+
+```{r}
+#Honors Cohort
+
+n <- table(Admitted.Honors.Cohort)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+
+Admitted_percent =c(y[1:length(n)]/sum(y)*100)
+Admitted_percent = format(round(Admitted_percent, 3), nsmall = 2)
+
+total <- rbind(n, Admitted_percent)
+total
+
+barplot(n, horiz = TRUE, main ='Admitted Honors Cohort Breakdown', las=1, cex.names = 0.45)
+
+#Comparison Bar plot
+n_completed <- table(passed$Admitted.Honors.Cohort)
+n_incompleted <- table(failed$Admitted.Honors.Cohort)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot", cex.names = 0.7)
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Admitted_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Admitted_percent = format(round(Admitted_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Admitted_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Admitted_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Admitted_percent = format(round(Admitted_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Admitted_percent)
+total
+
+```
+
+
+```{r}
+n <- table(Permanent.City) #part of regions
+```
+
+```{r}
+#Permanent State
+
+n <- table(Permanent.State)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+
+State_percent =c(y[1:length(n)]/sum(y)*100)
+State_percent = format(round(State_percent, 3), nsmall = 2)
+
+total <- rbind(n, State_percent)
+total
+
+barplot(n, horiz = TRUE, main= ' Permanent State Breakdown' ,las=1, cex.names = 1)
+
+#Comparison Bar plot
+n_completed <- table(passed$Permanent.State)
+n_incompleted <- table(failed$Permanent.State)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+State_percent =c(y[1:length(n_completed)]/sum(y)*100)
+State_percent = format(round(State_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, State_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+State_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+State_percent = format(round(State_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, State_percent)
+total
+```
+
+```{r}
+#Capstone Project
+
+n <- table(Capstone.Project.Completion)
+y = c(n)
+
+
+Capstone_percent =c(y[1:length(n)]/sum(y)*100)
+Capstone_percent = format(round(Capstone_percent, 3), nsmall = 2)
+
+total <- rbind(n, Capstone_percent)
+total
+
+pie(n, labels = n, col = rainbow(2))
+legend(.6, 1, c("Capstone Incompletion","Capstone Completion"), cex = 1, fill = rainbow(2))
+
+#Comparison Bar plot
+n_completed <- table(passed$Capstone.Project.Completion)
+n_incompleted <- table(failed$Capstone.Project.Completion)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("top", c("All","Passed","Failed"), cex=0.8, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+#finding percentage for variable
+Capstone_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Capstone_percent = format(round(Capstone_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Capstone_percent)
+total
+
+
+y = c(n_incompleted)
+#finding percentage for variable
+Capstone_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Capstone_percent = format(round(Capstone_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Capstone_percent)
+total
+```
+
+```{r}
+n <- table(County)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+County_percent =c(y[1:length(n)]/sum(y)*100)
+County_percent = format(round(County_percent, 3), nsmall = 2)
+
+total <- rbind(n, County_percent)
+total
+
+
+barplot(n,  horiz = TRUE, main= ' County Breakdown' ,las=1, cex.names = .2)
+
+#Comparison Bar plot
+n_completed <- table(passed$County)
+n_incompleted <- table(failed$County)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot", cex.names = 0.2)
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+County_percent =c(y[1:length(n_completed)]/sum(y)*100)
+County_percent = format(round(County_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, County_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+County_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+County_percent = format(round(County_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, County_percent)
+total
+
+```
+
+```{r}
+n <-table(Region)
+n <- sort(n, decreasing = TRUE)
+
+y = c(n)
+
+Region_percent =c(y[1:length(n)]/sum(y)*100)
+Region_percent = format(round(Region_percent, 3), nsmall = 2)
+
+total <- rbind(n, Region_percent)
+total
+
+
+barplot(n,  horiz = TRUE, main= ' Region Breakdown' ,las=1, cex.names = 1)
+
+#Comparison Bar plot
+n_completed <- table(passed$Region)
+n_incompleted <- table(failed$Region)
+all_n <- rbind(n,n_incompleted,n_completed)
+barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+#Add legends
+legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+
+y = c(n_completed)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Region_percent =c(y[1:length(n_completed)]/sum(y)*100)
+Region_percent = format(round(Region_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_completed, Region_percent)
+total
+
+
+y = c(n_incompleted)
+y <- sort(y, decreasing = TRUE)
+#finding percentage for variable
+Region_percent =c(y[1:length(n_incompleted)]/sum(y)*100)
+Region_percent = format(round(Region_percent, 3), nsmall = 2)
+#adding percentage and freq to a single table
+total <- rbind(n_incompleted, Region_percent)
+total
+
+```
+
+

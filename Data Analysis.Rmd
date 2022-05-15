@@ -1,0 +1,129 @@
+---
+title: "Data analysis for Group Project"
+author: "Daniel Han"
+date: "5/10/2022"
+output: html_document
+---
+
+clear Variables
+```{r}
+rm(list=ls())
+```
+
+
+```{r}
+rm(list=ls())
+library(tidyverse)
+library(plotrix)
+library(multcomp)
+library(emmeans)
+```
+
+```{r}
+#cleaned by Group Member
+df <- read.csv(file.choose())
+df
+
+
+
+```
+```{r}
+#converting chrs to factors
+df$Gender <- as.factor(df$Gender)
+df$IPEDS.Ethnicity <- as.factor(df$IPEDS.Ethnicity)
+df$Low.Income <-as.factor(df$Low.Income)
+df$First.Generation <-as.factor(df$First.Generation)
+df$Admit.Type <-as.factor(df$Admit.Type)
+df$Highlander.Scholarship <-as.factor(df$Highlander.Scholarship)
+df$Chancellor.s.Scholarship <-as.factor(df$Chancellor.s.Scholarship)
+df$Regents..Scholarship<-as.factor(df$Regents..Scholarship)
+df$College[is.na(df$College)] <- "CNAS" #converting NA to CNAS
+df$College<-as.factor(df$College)
+df$UCR.Entry.Action<-as.factor(df$UCR.Entry.Action)
+df$Admitted.Honors.Cohort<-as.factor(df$Admitted.Honors.Cohort)
+df$Permanent.State<-as.factor(df$Permanent.State)
+df$Region<-as.factor(df$Region)
+df$County<-as.factor(df$County)
+df$Capstone.Project.Completion<-as.factor(df$Capstone.Project.Completion)
+str(df) #check variable types
+```
+
+```{r}
+#Logistic Regression
+dfnew1 <- subset(df,select = -c(Previous.School,Major,Permanent.City)) 
+# remove unnecessary variables from the data frame
+
+dfnew_omit1 <- na.omit(dfnew1)  #removes a lot of data because high school GPA and Gender has a lot of NA values.
+
+glm.out1 <- glm(Capstone.Project.Completion ~ Gender + IPEDS.Ethnicity + Low.Income
+
+               + First.Generation + Admit.Type +  Highlander.Scholarship
+
+               + Chancellor.s.Scholarship + Evaluated.High.School.GPA + Regents..Scholarship
+
+               + College + Admitted.Honors.Cohort + Region, family=binomial(logit), data=dfnew_omit1)
+
+summary(glm.out1)
+
+anova(glm.out1,test="Chisq") #significant coefficents are 1st gen, admitted honors cohort, Chancellor.s.Scholarship, Regents..Scholarship
+
+backward1 <- step(glm.out1)  
+# After the backward step, the significant coefficient left were College, First.gen, and admitted honors cohort, Chancellor.s.Scholarship, Regents..Scholarship
+# Gender and high school gpa were not significant in this case.
+
+# reorder the levels of treatment so that 'M' (Male) is the first 
+df$Gender<- relevel(df$Gender, 'M') 
+# reorder the levels of scholarships, low income, and 1st gen,  so that 'Y' (Yes) is the first
+df$Low.Income <- relevel(df$Low.Income, 'Y')
+df$First.Generation <- relevel(df$First.Generation, 'Y')
+df$Low.Income <- relevel(df$Low.Income, 'Y')
+df$Regents..Scholarship <- relevel(df$Regents..Scholarship, 'Y')
+df$Highlander.Scholarship <- relevel(df$Highlander.Scholarship, 'Y')
+df$Chancellor.s.Scholarship <- relevel(df$Chancellor.s.Scholarship, 'Y')
+df$Capstone.Project.Completion <- relevel(df$Capstone.Project.Completion, 'Yes')
+
+
+dfnew2 <- subset(dfnew1,select = -c(Evaluated.High.School.GPA)) # remove high school GPA variable 
+dfnew_omit2 <- na.omit(dfnew2) # after removing high school gpa variable, omitting NAs removes a lot less data now
+
+#new logistic regression model without evaluated high school GPA
+glm.out2 <- glm(Capstone.Project.Completion ~ Gender + IPEDS.Ethnicity + Low.Income
+
+               + First.Generation + Admit.Type +  Highlander.Scholarship
+
+               + Chancellor.s.Scholarship +  Regents..Scholarship
+
+               + College + Admitted.Honors.Cohort + Region, family=binomial(logit), data=dfnew_omit2)
+
+summary(glm.out2)
+
+anova(glm.out2,test="Chisq")  #significant coefficients are 1st gen, admitted honors cohort, Chancellor.s.Scholarship, Regents..Scholarship
+
+backward2 <- step(glm.out2)
+#After the backward selection, the final model variables left were College, First.gen, and admitted honors cohort., Chancellor.s.Scholarship, Regents..Scholarship
+
+#new logistic regression model with significant variables (College, First.gen, and admitted honors cohort)
+glm.out3 <- glm(Capstone.Project.Completion ~ College + Admitted.Honors.Cohort  + Chancellor.s.Scholarship +  
+                
+                Regents..Scholarship + First.Generation, family=binomial(logit), data=dfnew_omit2)
+
+summary(glm.out3)
+anova(glm.out3,test="Chisq") #significant coefficient are admitted honors cohort and 1st gen, Chancellor.s.Scholarship, Regents..Scholarship
+
+
+
+#Pairwise Comparison w/ variables College and Admitted honors cohort with tukey  and emeans.
+summary(glht(glm.out3, linfct = mcp(College = "Tukey")))
+emmeans(glm.out3,list(pairwise ~ College))
+
+summary(glht(glm.out3, linfct = mcp(Admitted.Honors.Cohort = "Tukey")))
+emmeans(glm.out3,list(pairwise ~ Admitted.Honors.Cohort))
+
+#Grouped Binary Response
+#Col = summary(glht(glm.out3, linfct = mcp(College = "Tukey")))
+#round(exp(Col$test$coefficients),4) # not significant enough to affect Capstone Project completion 
+
+AHC =summary(glht(glm.out3, linfct = mcp(Admitted.Honors.Cohort = "Tukey")))
+round(exp(AHC$test$coefficients),4)
+
+```
