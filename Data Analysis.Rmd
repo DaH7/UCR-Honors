@@ -108,6 +108,7 @@ glm.out3 <- glm(Capstone.Project.Completion ~ College + Admitted.Honors.Cohort  
                 Regents..Scholarship + First.Generation, family=binomial(logit), data=dfnew_omit2)
 
 summary(glm.out3)
+round(exp(coef(glm.out3)),4)
 anova(glm.out3,test="Chisq") #significant coefficient are admitted honors cohort and 1st gen, Chancellor.s.Scholarship, Regents..Scholarship
 
 

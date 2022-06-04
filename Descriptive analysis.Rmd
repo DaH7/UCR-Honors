@@ -2,7 +2,9 @@
 title: "Descriptive analysis for Group Project"
 author: "Daniel Han"
 date: "4/13/2022"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 clear Variables
@@ -15,6 +17,8 @@ rm(list=ls())
 rm(list=ls())
 library(tidyverse)
 library(plotrix)
+library(data.table)
+library(ggplot2)
 
 ```
 
@@ -43,12 +47,12 @@ passed <- filter(clean_honors, Capstone.Project.Completion == "Yes")
 ```{r}
 #Gender
 n = table(Gender)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
 y = c(n)
 
 #finding percentage for variable
-Gender_percent =c(y[1:length(n)]/sum(y)*100)
+Gender_percent =c(y[1:length(n1)]/sum(y)*100)
 Gender_percent = format(round(Gender_percent, 3), nsmall = 2)
 
 #adding percentage and freq to a single table
@@ -95,12 +99,12 @@ total
 #Ethnicity
 
 n <- table(IPEDS.Ethnicity)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
-y = c(n)
+y = c(n1)
 
 
-Ethnicity_percent =c(y[1:length(n)]/sum(y)*100)
+Ethnicity_percent =c(y[1:length(n1)]/sum(y)*100)
 Ethnicity_percent = format(round(Ethnicity_percent, 3), nsmall = 2)
 
 total <- rbind(n, Ethnicity_percent)
@@ -232,12 +236,12 @@ total
 #Admit Type
 
 n <- table(Admit.Type)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
 
 y = c(n)
 
-admit_percent =c(y[1:length(n)]/sum(y)*100)
+admit_percent =c(y[1:length(n1)]/sum(y)*100)
 admit_percent = format(round(admit_percent, 3), nsmall = 2)
 
 
@@ -378,7 +382,7 @@ total
 #Regents Scholarship
 
 n <- table(Regents..Scholarship)
-y = c(n )
+y = c(n)
 
 
 Regents_percent =c(y[1:length(n)]/sum(y)*100)
@@ -427,17 +431,18 @@ n <- table(Previous.School) #part of county
 #College
 
 n <- table(College)
-n <- sort(n, decreasing = TRUE)
-y = c(53, 6, 133 , 405, 6)
+n1 <- sort(n, decreasing = TRUE)
+
+y = c(n1)
 
 
-College_percent =c(y[1:length(n)]/sum(y)*100)
+College_percent =c(y[1:length(n1)]/sum(y)*100)
 College_percent = format(round(College_percent, 3), nsmall = 2)
 
-total <- rbind(n, College_percent)
+total <- rbind(n1, College_percent)
 total
 
-barplot(n, horiz = TRUE, main ='College Breakdown' ,las=1, cex.names = 2)
+barplot(n, horiz = TRUE, main ='College Breakdown' ,las=1, cex.names = 1)
 
 #Comparison Bar plot
 n_completed <- table(passed$College)
@@ -559,12 +564,12 @@ total
 #Honors Cohort
 
 n <- table(Admitted.Honors.Cohort)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
-y = c(n)
+y = c(n1)
 
 
-Admitted_percent =c(y[1:length(n)]/sum(y)*100)
+Admitted_percent =c(y[1:length(n1)]/sum(y)*100)
 Admitted_percent = format(round(Admitted_percent, 3), nsmall = 2)
 
 total <- rbind(n, Admitted_percent)
@@ -622,7 +627,7 @@ State_percent = format(round(State_percent, 3), nsmall = 2)
 total <- rbind(n, State_percent)
 total
 
-barplot(n, horiz = TRUE, main= ' Permanent State Breakdown' ,las=1, cex.names = 1)
+barplot(n, horiz = TRUE, main= ' Permanent State Breakdown' ,las=1, cex.names = 0.6)
 
 #Comparison Bar plot
 n_completed <- table(passed$Permanent.State)
@@ -669,14 +674,6 @@ total
 pie(n, labels = n, col = rainbow(2))
 legend(.6, 1, c("Capstone Incompletion","Capstone Completion"), cex = 1, fill = rainbow(2))
 
-#Comparison Bar plot
-n_completed <- table(passed$Capstone.Project.Completion)
-n_incompleted <- table(failed$Capstone.Project.Completion)
-all_n <- rbind(n,n_incompleted,n_completed)
-barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
-#Add legends
-legend("top", c("All","Passed","Failed"), cex=0.8, bty="n",fill=rainbow(3))
-
 
 y = c(n_completed)
 #finding percentage for variable
@@ -698,11 +695,11 @@ total
 
 ```{r}
 n <- table(County)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
-y = c(n)
+y = c(n1)
 
-County_percent =c(y[1:length(n)]/sum(y)*100)
+County_percent =c(y[1:length(n1)]/sum(y)*100)
 County_percent = format(round(County_percent, 3), nsmall = 2)
 
 total <- rbind(n, County_percent)
@@ -711,14 +708,20 @@ total
 
 barplot(n,  horiz = TRUE, main= ' County Breakdown' ,las=1, cex.names = .2)
 
-#Comparison Bar plot
-n_completed <- table(passed$County)
-n_incompleted <- table(failed$County)
-all_n <- rbind(n,n_incompleted,n_completed)
-barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot", cex.names = 0.2)
-#Add legends
-legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
 
+
+
+# #Comparison Bar plot
+# n_completed <- table(passed$County)
+# n_incompleted <- table(failed$County)
+# all_n <- rbind(n,n_incompleted,n_completed)
+# barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot", cex.names = 0.2)
+# #Add legends
+# legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+z1 <- dplyr::bind_rows(n, n_completed , n_incompleted)
+
+# barplot(b1, main = "Comparison Bar plot", cex.names = 0.2)
 
 y = c(n_completed)
 y <- sort(y, decreasing = TRUE)
@@ -743,26 +746,33 @@ total
 
 ```{r}
 n <-table(Region)
-n <- sort(n, decreasing = TRUE)
+n1 <- sort(n, decreasing = TRUE)
 
-y = c(n)
+y = c(n1)
 
-Region_percent =c(y[1:length(n)]/sum(y)*100)
+Region_percent =c(y[1:length(n1)]/sum(y)*100)
 Region_percent = format(round(Region_percent, 3), nsmall = 2)
 
-total <- rbind(n, Region_percent)
+total <- rbind(n1, Region_percent)
 total
 
 
-barplot(n,  horiz = TRUE, main= ' Region Breakdown' ,las=1, cex.names = 1)
+barplot(n1,  horiz = TRUE, main= ' Region Breakdown' ,las=1, cex.names = 1)
 
+
+
+
+  
 #Comparison Bar plot
-n_completed <- table(passed$Region)
-n_incompleted <- table(failed$Region)
-all_n <- rbind(n,n_incompleted,n_completed)
-barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
-#Add legends
-legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+# n_completed <- table(passed$Region)
+# n_incompleted <- table(failed$Region)
+# all_n <- rbind(n,n_incompleted,n_completed)
+# barplot(all_n,beside = TRUE,col=(rainbow(3)), main = "Comparison Bar plot")
+# #Add legends
+# legend("topright", c("All","Passed","Failed"), cex=1.0, bty="n",fill=rainbow(3))
+
+z <- dplyr::bind_rows(n, n_completed , n_incompleted)
+# table(z)
 
 
 y = c(n_completed)
